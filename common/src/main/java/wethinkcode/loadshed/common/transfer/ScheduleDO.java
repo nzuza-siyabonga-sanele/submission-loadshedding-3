@@ -13,8 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 // this model is just a dummy "the minimum thing that could possible work"
 // so that we can stay focussed on service interconnections and communication
 // without getting bogged down in modelling.
-public class ScheduleDO
-{
+public class ScheduleDO {
     // Using LocalDate.now() is probably a bug! Is the server in the
     // same timezone as the client? Maybe not.
     // What if the server creates an instance one nanosecond before midnight
@@ -24,24 +23,24 @@ public class ScheduleDO
 
     private List<DayDO> loadSheddingDays;
 
-    public ScheduleDO(){
+    public ScheduleDO() {
     }
 
     @JsonCreator
     public ScheduleDO(
-        @JsonProperty( value = "days" ) List<DayDO> days ){
+            @JsonProperty(value = "days") List<DayDO> days) {
         loadSheddingDays = days;
     }
 
-    public List<DayDO> getDays(){
+    public List<DayDO> getDays() {
         return loadSheddingDays;
     }
 
-    public int numberOfDays(){
+    public int numberOfDays() {
         return getDays().size();
     }
 
-    public LocalDate getStartDate(){
+    public LocalDate getStartDate() {
         return startDate;
     }
 

@@ -1,16 +1,13 @@
 package wethinkcode.loadshed.spikes;
 
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Session;
+import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
  * I am a small "maker" app for receiving MQ messages from the Stage Service.
  */
-public class TopicSender implements Runnable
-{
+public class TopicSender implements Runnable {
     private static long NAP_TIME = 2000; //ms
 
     public static final String MQ_URL = "tcp://localhost:61616";
@@ -21,47 +18,56 @@ public class TopicSender implements Runnable
 
     public static final String MQ_TOPIC_NAME = "stage";
 
-    public static void main( String[] args ){
+    public static void main(String[] args) {
         final TopicSender app = new TopicSender();
         app.cmdLineMsgs = args;
         app.run();
     }
-
     private String[] cmdLineMsgs;
 
     private Connection connection;
+    private MessageProducer producer;
 
     private Session session;
 
     @Override
-    public void run(){
-        try{
-            final ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory( MQ_URL );
-            connection = factory.createConnection( MQ_USER, MQ_PASSWD );
+    public void run() {
+        try {
+            final ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(MQ_URL);
+            connection = factory.createConnection(MQ_USER, MQ_PASSWD);
             connection.start();
 
-            session = connection.createSession( false, Session.AUTO_ACKNOWLEDGE );
-            sendMessages( cmdLineMsgs.length == 0
-                ? new String[]{ "{ \"stage\":17 }" }
-                : cmdLineMsgs );
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            final Destination destination = session.createQueue( MQ_TOPIC_NAME );
+            MessageProducer producer = session.createProducer(destination);
 
-        }catch( JMSException erk ){
-            throw new RuntimeException( erk );
-        }finally{
+            sendMessages(cmdLineMsgs.length == 0
+                    ? new String[]{"{ \"stage\":17 }"}
+                    : cmdLineMsgs);
+
+        } catch (JMSException erk) {
+            throw new RuntimeException(erk);
+        } finally {
             closeResources();
-            System.out.println( "Bye..." );
+            System.out.println("Bye...");
         }
     }
 
-    private void sendMessages( String[] messages ) throws JMSException {
-        throw new UnsupportedOperationException( "TODO" );
+    private void sendMessages(String[] messages) throws JMSException {
+
+        for (String message : messages) {
+            TextMessage msg = session.createTextMessage(message);
+            producer.send(msg);
+            System.out.println("Sent message : "+ message);
+        }
+//        throw new UnsupportedOperationException("TODO");
     }
 
-    private void closeResources(){
-        try{
-            if( session != null ) session.close();
-            if( connection != null ) connection.close();
-        }catch( JMSException ex ){
+    private void closeResources() {
+        try {
+            if (session != null) session.close();
+            if (connection != null) connection.close();
+        } catch (JMSException ex) {
             // wut?
         }
         session = null;

@@ -42,7 +42,7 @@ import wethinkcode.places.model.Town;
  *      <em>overrides</em> any value in a configuration file and will bypass any
  *      data-directory set via command-line or configuration.
  */
-@Command( name = "PlaceNameService", mixinStandardHelpOptions = true )
+@Command(name = "PlaceNameService", mixinStandardHelpOptions = true)
 public class PlaceNameService implements Runnable {
 
     public static final int DEFAULT_PORT = 7000;
@@ -53,10 +53,10 @@ public class PlaceNameService implements Runnable {
     public static final String CFG_DATA_FILE = "data.file";
     public static final String CFG_SERVICE_PORT = "server.port";
 
-    public static void main( String[] args ){
-        final PlaceNameService svc = new PlaceNameService().initialise();
-        final int exitCode = new CommandLine( svc ).execute( args );
-        System.exit( exitCode );
+    public static void main(String[] args) {
+        final PlaceNameService svc = new PlaceNameService();
+        final int exitCode = new CommandLine(svc).execute(args);
+//        System.exit(exitCode);
     }
 
     // Instance state
@@ -73,33 +73,34 @@ public class PlaceNameService implements Runnable {
     // library deal with them properly if they're in an inner/nested class (or something)?
     // I haven't the time to discover this right now.
 
-    @Option( names = { "-c", "--config" }, description = "Configuration file path" )
+    @Option(names = {"-c", "--config"}, description = "Configuration file path")
     private File configFile;
 
-    @Option( names = { "-d", "--datadir" },
-             description = "Directory pathname where datafiles may be found" )
+    @Option(names = {"-d", "--datadir"},
+            description = "Directory pathname where datafiles may be found")
     private File dataDir;
 
-    @Option( names = { "-f", "--datafile" }, description = "CSV Data file path" )
+    @Option(names = {"-f", "--datafile"}, description = "CSV Data file path")
     private File dataFile;
 
-    @Option( names = { "-p", "--port" }, description = "Service network port number" )
+    @Option(names = {"-p", "--port"}, description = "Service network port number")
     private int svcPort;
 
-    public PlaceNameService(){
+    public PlaceNameService() {
         config = initConfig();
     }
 
-    public void start(){
-        start( servicePort() );
+    public void start() {
+        start(servicePort());
     }
 
     @VisibleForTesting
-    void start( int port ){
-        server.start( port );
+    void start(int port) {
+        initialise();
+        server.start(port);
     }
 
-    public void stop(){
+    public void stop() {
         server.stop();
     }
 
@@ -109,7 +110,7 @@ public class PlaceNameService implements Runnable {
      * starting up all the big machinery (i.e. without calling initialise()).
      */
     @VisibleForTesting
-    PlaceNameService initialise(){
+    PlaceNameService initialise() {
         places = initPlacesDb();
         server = initHttpServer();
         return this;
@@ -119,15 +120,15 @@ public class PlaceNameService implements Runnable {
      * Sometimes we want to initialise with test data...
      */
     @VisibleForTesting
-    PlaceNameService initialise( Places aPlaceDb ){
+    PlaceNameService initialise(Places aPlaceDb) {
         places = aPlaceDb;
         server = initHttpServer();
         return this;
     }
 
     @Override
-    public void run(){
-        server.start( servicePort() );
+    public void run() {
+        server.start(servicePort());
     }
 
     /**
@@ -138,12 +139,12 @@ public class PlaceNameService implements Runnable {
      *
      * @return a non-null Properties instance
      */
-    private Properties initConfig(){
-        try( FileReader in = new FileReader( configFile() )){
-            final Properties p = new Properties( defaultConfig() );
-            p.load( in );
+    private Properties initConfig() {
+        try (FileReader in = new FileReader(configFile())) {
+            final Properties p = new Properties(defaultConfig());
+            p.load(in);
             return p;
-        }catch( IOException ex ){
+        } catch (IOException ex) {
 
             // We can recover from this, but (maybe later) we really
             // ought to notify somebody that there's a problem.
@@ -152,72 +153,72 @@ public class PlaceNameService implements Runnable {
         }
     }
 
-    private Places initPlacesDb(){
-        try{
-            return new PlacesCsvParser().parseCsvSource( dataFile() );
-        }catch( IOException ex ){
-
-            // FIXME: We really ought to be able to do better than this!
-            System.err.println( "Error reading CSV file " + dataFile + ": " + ex.getMessage() );
-            throw new RuntimeException( ex );
+    private Places initPlacesDb() {
+        try {
+            return new PlacesCsvParser().parseCsvSource(dataFile());
+        } catch (IOException ex) {
+            dataFile = new File(
+                    "/home/wtc_laptop/submission-loadshedding-3/places/resources/PlaceNamesZA2008.csv"
+            );
         }
+        return initPlacesDb();
     }
 
-    private Javalin initHttpServer(){
+    private Javalin initHttpServer() {
         return Javalin.create()
-            .get( "/provinces", ctx -> ctx.json( places.provinces() ))
-            .get( "/towns/{province}", this::getTowns );
+                .get("/provinces", ctx -> ctx.json(places.provinces()))
+                .get("/towns/{province}", this::getTowns);
     }
 
-    private Context getTowns( Context ctx ){
-        final String province = ctx.pathParam( "province" );
-        final Collection<Town> towns = places.townsIn( province );
-        return ctx.json( towns );
+    private Context getTowns(Context ctx) {
+        final String province = ctx.pathParam("province");
+        final Collection<Town> towns = places.townsIn(province);
+        return ctx.json(towns);
     }
 
     @VisibleForTesting
-    File configFile(){
+    File configFile() {
         return configFile != null
-            ? configFile
-            : new File( defaultConfig().getProperty( CFG_CONFIG_FILE ));
+                ? configFile
+                : new File(defaultConfig().getProperty(CFG_CONFIG_FILE));
     }
 
     @VisibleForTesting
-    File dataFile(){
+    File dataFile() {
         return dataFile != null
-            ? dataFile
-            : new File( getConfig( CFG_DATA_FILE ));
+                ? dataFile
+                : new File(getConfig(CFG_DATA_FILE));
     }
 
     @VisibleForTesting
-    File dataDir(){
+    File dataDir() {
         return dataDir != null
-            ? dataDir
-            : new File( getConfig( CFG_DATA_DIR ));
+                ? dataDir
+                : new File(getConfig(CFG_DATA_DIR));
     }
 
-    int servicePort(){
+    int servicePort() {
         return svcPort > 0
-            ? svcPort
-            : Integer.valueOf( getConfig( CFG_SERVICE_PORT ));
+                ? svcPort
+                : Integer.valueOf(getConfig(CFG_SERVICE_PORT));
     }
 
     @VisibleForTesting
-    String getConfig( String aKey ){
-        return config.getProperty( aKey );
+    String getConfig(String aKey) {
+        return config.getProperty(aKey);
     }
 
     @VisibleForTesting
-    Places getDb(){
+    Places getDb() {
         return places;
     }
 
-    private static Properties defaultConfig(){
+    private static Properties defaultConfig() {
         final Properties p = new Properties();
-        p.setProperty( CFG_CONFIG_FILE, System.getProperty( "user.dir" ) + "/places.properties" );
-        p.setProperty( CFG_DATA_DIR, System.getProperty( "user.dir" ));
-        p.setProperty( CFG_DATA_FILE, System.getProperty( "user.dir" ) + "/places.csv" );
-        p.setProperty(CFG_SERVICE_PORT, Integer.toString(DEFAULT_PORT ));
+        p.setProperty(CFG_CONFIG_FILE, System.getProperty("user.dir") + "/places.properties");
+        p.setProperty(CFG_DATA_DIR, System.getProperty("user.dir"));
+        p.setProperty(CFG_DATA_FILE, System.getProperty("user.dir") + "/places.csv");
+        p.setProperty(CFG_SERVICE_PORT, Integer.toString(DEFAULT_PORT));
         return p;
     }
 }

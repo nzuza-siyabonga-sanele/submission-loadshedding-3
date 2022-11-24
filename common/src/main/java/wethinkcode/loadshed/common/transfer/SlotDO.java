@@ -8,28 +8,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * TODO: javadoc SlotDO
  */
-public class SlotDO
-{
+public class SlotDO {
     private LocalTime start;
 
     private LocalTime end;
 
-    public SlotDO(){
+    public SlotDO() {
     }
 
     @JsonCreator
     public SlotDO(
-        @JsonProperty( value = "from" ) LocalTime from,
-        @JsonProperty( value = "to" ) LocalTime to ){
+            @JsonProperty(value = "from") LocalTime from,
+            @JsonProperty(value = "to") LocalTime to) {
         start = from;
         end = to;
     }
 
-    public LocalTime getStart(){
+    public LocalTime getStart() {
         return start;
     }
 
-    public LocalTime getEnd(){
+    public LocalTime getEnd() {
         return end;
     }
 

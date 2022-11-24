@@ -27,47 +27,46 @@ import static java.util.Objects.requireNonNull;
  * <code>Feature_Description</code> allows us to distinguish towns and urban areas from
  * (e.g.) rivers, mountains, etc. since our PlaceNameService is only concerned with occupied places.
  */
-public class PlacesCsvParser
-{
-    public Places parseCsvSource( File csvFile ) throws FileNotFoundException, IOException {
+public class PlacesCsvParser {
+    public Places parseCsvSource(File csvFile) throws FileNotFoundException, IOException {
         //{snip/1}
-        requireNonNull( csvFile );
-        if( ! (csvFile.exists() && csvFile.canRead() )){
-            throw new FileNotFoundException( "Required CSV input file " + csvFile.getPath() + " not found." );
+        requireNonNull(csvFile);
+        if (!(csvFile.exists() && csvFile.canRead())) {
+            throw new FileNotFoundException("Required CSV input file " + csvFile.getPath() + " not found.");
         }
 
-        return parseCsvSource( new LineNumberReader(
-            new FileReader( csvFile )
+        return parseCsvSource(new LineNumberReader(
+                new FileReader(csvFile)
         ));
         //{/snip}
     }
 
     //{snip/1}
-    public Places parseCsvSource( LineNumberReader reader ) throws IOException {
-        try( final LineNumberReader in = Objects.requireNonNull( reader )){
+    public Places parseCsvSource(LineNumberReader reader) throws IOException {
+        try (final LineNumberReader in = Objects.requireNonNull(reader)) {
             in.readLine();  // get rid of the header line
-            final Places db = parseDataLines( in );
+            final Places db = parseDataLines(in);
             in.getLineNumber();
             return db;
         }
     }
 
     @VisibleForTesting
-    Places parseDataLines( final LineNumberReader in ){
+    Places parseDataLines(final LineNumberReader in) {
         final Set<Town> allTowns = in.lines()
-            .map( this::splitLineIntoValues )
-            .filter(this::isLineAWantedFeature )
-            .map( this::asTown )
-            .collect( Collectors.toSet() );
-        return new PlacesDb( allTowns );
+                .map(this::splitLineIntoValues)
+                .filter(this::isLineAWantedFeature)
+                .map(this::asTown)
+                .collect(Collectors.toSet());
+        return new PlacesDb(allTowns);
     }
 
     // The following variables are only useful in the methods that follow them...
 
     private static final Set<String> WANTED_FEATURES = Set.of(
-        "Urban Area".toLowerCase(),
-        "Town".toLowerCase(),
-        "Township".toLowerCase() );
+            "Urban Area".toLowerCase(),
+            "Town".toLowerCase(),
+            "Township".toLowerCase());
 
     static final int NAME_COLUMN = 0;
     static final int FEATURE_COLUMN = 1;
@@ -76,12 +75,17 @@ public class PlacesCsvParser
     static final int MAX_COLUMNS = 20;
 
     @VisibleForTesting
-    boolean isLineAWantedFeature( String[] csvValue ){
-        return WANTED_FEATURES.contains( csvValue[FEATURE_COLUMN].toLowerCase() );
+    boolean isLineAWantedFeature(String[] csvValue) {
+        if (csvValue.length >= MIN_COLUMNS && csvValue.length <= MAX_COLUMNS) {
+            if (!csvValue[PROVINCE_COLUMN].contains("\"") && csvValue[PROVINCE_COLUMN].length() > 1) {
+                return WANTED_FEATURES.contains(csvValue[FEATURE_COLUMN].toLowerCase());
+            }
+        }
+        return false;
     }
 
     @VisibleForTesting
-    String[] splitLineIntoValues( String aCsvLine ){
+    String[] splitLineIntoValues(String aCsvLine) {
 
         // There is a small potential problem with using String::split here:
         // split() ignores empty values at the end of the input String rather than
@@ -94,13 +98,13 @@ public class PlacesCsvParser
         // The alternative to using split() would be to parse the input "by hand".
         // That's tedious and error-prone.
 
-        final String[] v = aCsvLine.trim().split( "," );
+        final String[] v = aCsvLine.trim().split(",");
         return v;
     }
 
     @VisibleForTesting
-    Town asTown( String[] values ){
-        return new Town( values[NAME_COLUMN], values[PROVINCE_COLUMN]);
+    Town asTown(String[] values) {
+        return new Town(values[NAME_COLUMN], values[PROVINCE_COLUMN]);
     }
     //{/snip}
 }

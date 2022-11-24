@@ -3,23 +3,22 @@ package wethinkcode.loadshed.common.transfer;
 /**
  * I am a data/transfer object for communicating the loadshedding stage.
  */
-public class StageDO
-{
+public class StageDO {
     private int stage;
 
     /**
      * Default constructor is needed otherwise the JSON mapper
      * can't create an instance.
      */
-    public StageDO(){
+    public StageDO() {
         stage = 0;
     }
 
-    public StageDO( int s ){
+    public StageDO(int s) {
         stage = s;
     }
 
-    public int getStage(){
+    public int getStage() {
         return stage;
     }
 

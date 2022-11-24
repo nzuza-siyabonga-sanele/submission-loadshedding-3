@@ -2,6 +2,13 @@ package wethinkcode.web;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
+import io.javalin.plugin.rendering.JavalinRenderer;
+import io.javalin.plugin.rendering.template.JavalinThymeleaf;
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import wethinkcode.loadshed.spikes.TopicReceiver;
 import wethinkcode.places.PlaceNameService;
 import wethinkcode.schedule.ScheduleService;
 import wethinkcode.stage.StageService;
@@ -12,10 +19,9 @@ import wethinkcode.stage.StageService;
  * Remember that we're not terribly interested in the web front-end part of this server, more in the way it communicates
  * and interacts with the back-end services.
  */
-public class WebService
-{
+public class WebService {
 
-    public static final int DEFAULT_PORT = 80;
+    public static final int DEFAULT_PORT = 8088;
 
     public static final String STAGE_SVC_URL = "http://localhost:" + StageService.DEFAULT_PORT;
 
@@ -23,9 +29,9 @@ public class WebService
 
     public static final String SCHEDULE_SVC_URL = "http://localhost:" + ScheduleService.DEFAULT_PORT;
 
-    private static final String PAGES_DIR = "/html";
+    private static final String PAGES_DIR = "/templates";
 
-    public static void main( String[] args ){
+    public static void main(String[] args) {
         final WebService svc = new WebService().initialise();
         svc.start();
     }
@@ -35,34 +41,61 @@ public class WebService
     private int servicePort;
 
     @VisibleForTesting
-    WebService initialise(){
+    WebService initialise() {
+        configureHttpClient();
+        TopicReceiver app = MQMachinery();
+        server = configureHttpServer();
         // FIXME: Initialise HTTP client, MQ machinery and server from here
         return this;
     }
 
-    public void start(){
-        start( DEFAULT_PORT );
+    public TopicReceiver MQMachinery(){
+        return new TopicReceiver();
+    }
+
+    public void start() {
+        start(DEFAULT_PORT);
     }
 
     @VisibleForTesting
-    void start( int networkPort ){
+    void start(int networkPort) {
         servicePort = networkPort;
         run();
     }
 
-    public void stop(){
+    public void stop() {
         server.stop();
     }
 
-    public void run(){
-        server.start( servicePort );
+    public void run() {
+        server.start(servicePort);
     }
 
-    private void configureHttpClient(){
-        throw new UnsupportedOperationException( "TODO" );
+    private void configureHttpClient() {
+        PlaceNameService placeNameService = new PlaceNameService();
+        placeNameService.start();
+        ScheduleService scheduleService = new ScheduleService();
+        scheduleService.start();
+        StageService stageService = new StageService();
+        stageService.start();
+//        throw new UnsupportedOperationException("TODO");
     }
 
-    private Javalin configureHttpServer(){
-        throw new UnsupportedOperationException( "TODO" );
+    private Javalin configureHttpServer() {
+        server = Javalin.create(config -> {
+            config.addStaticFiles(PAGES_DIR, Location.CLASSPATH);
+            JavalinRenderer.register(JavalinThymeleaf.INSTANCE);
+            JavalinThymeleaf.configure(templateEngine());
+        });
+        return server;
+//        throw new UnsupportedOperationException("TODO");
+    }
+    private TemplateEngine templateEngine() {
+        TemplateEngine templateEngine = new TemplateEngine();
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix(PAGES_DIR);
+        templateEngine.setTemplateResolver(templateResolver);
+        templateEngine.addDialect(new LayoutDialect());
+        return templateEngine;
     }
 }

@@ -8,24 +8,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * TODO: javadoc DayDO
  */
-public class DayDO
-{
+public class DayDO {
     private List<SlotDO> loadSheddingSlots;
 
-    public DayDO(){
+    public DayDO() {
     }
 
     @JsonCreator
     public DayDO(
-        @JsonProperty( value = "slots" ) List<SlotDO> slots ){
+            @JsonProperty(value = "slots") List<SlotDO> slots) {
         loadSheddingSlots = slots;
     }
 
-    public List<SlotDO> getSlots(){
+    public List<SlotDO> getSlots() {
         return loadSheddingSlots;
     }
 
-    public int numberOfSlots(){
+    public int numberOfSlots() {
         return getSlots().size();
     }
 
