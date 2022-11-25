@@ -77,13 +77,13 @@ public class ScheduleService {
             return ctx.status(400);
         }
 
-        int newStage = app.getStage();
+        int newStage = whichStage();
 
-        if( allStages.contains(newStage) ){
-            allStages.add(newStage);
+        if( !allStages.contains( newStage ) ){
+            return ctx.status(400);
         }
 
-        final Optional<ScheduleDO> schedule = getSchedule(province, townName, newStage);
+        final Optional<ScheduleDO> schedule = getSchedule(province, townName, newStage );
 
         ctx.status(schedule.isPresent()
                 ? 200
@@ -91,11 +91,21 @@ public class ScheduleService {
         return ctx.json(schedule.orElseGet(ScheduleService::emptySchedule));
     }
 
+    public int whichStage(){
+        int newStage = app.getStage();
+        if( !allStages.contains(newStage) && newStage != DEFAULT_STAGE ){
+            allStages.add(newStage);
+            return newStage;
+        }else{
+            return DEFAULT_STAGE;
+        }
+    }
+
     private Context getDefaultSchedule(Context ctx) {
         final String province = ctx.pathParam("province");
         final String townName = ctx.pathParam("town");
 
-        Optional<ScheduleDO> schedule = getSchedule( province, townName, app.getStage() );
+        Optional<ScheduleDO> schedule = getSchedule( province, townName, whichStage() );
 
         ctx.status(schedule.isPresent()
                 ? 200
