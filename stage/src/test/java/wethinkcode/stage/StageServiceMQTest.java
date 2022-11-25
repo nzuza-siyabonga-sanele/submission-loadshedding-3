@@ -3,13 +3,7 @@ package wethinkcode.stage;
 
 import java.util.concurrent.SynchronousQueue;
 
-import javax.jms.Connection;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.Session;
+import javax.jms.*;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.HttpStatus;
@@ -69,11 +63,34 @@ public class StageServiceMQTest
 
     @Test
     public void sendMqEventWhenStageChanges(){
+        System.out.println("vfbhbhjbhjfd");
         final SynchronousQueue<StageDO> resultCatcher = new SynchronousQueue<>();
-        final MessageListener mqListener = new MessageListener(){
-            @Override
-            public void onMessage( Message message ){
-                throw new UnsupportedOperationException( "TODO" );
+        final MessageListener mqListener = message -> {
+            long start = System.currentTimeMillis();
+            if(message instanceof TextMessage){
+
+                String body = null;
+                try {
+                    body = ((TextMessage) message).getText();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+
+                if ("SHUTDOWN".equals(body)) {
+                    long diff = System.currentTimeMillis() - start;
+                    System.out.println(String.format("Received %d in %.2f seconds", (1.0 * diff / 1000.0)));
+                    try {
+                        mqConnection.close();
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (Exception e) {}
+                    System.exit(0);
+                }
+                System.out.println("Received message:" + body);
+
             }
         };
 

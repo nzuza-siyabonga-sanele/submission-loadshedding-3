@@ -89,6 +89,7 @@ public class PlaceNameService implements Runnable {
 
     public PlaceNameService() {
         config = initConfig();
+        initialise();
     }
 
     public void start() {
@@ -97,7 +98,6 @@ public class PlaceNameService implements Runnable {
 
     @VisibleForTesting
     void start(int port) {
-        initialise();
         server.start(port);
     }
 
@@ -156,8 +156,8 @@ public class PlaceNameService implements Runnable {
 
     private Places initPlacesDb() {
         try {
-            return new PlacesCsvParser().parseCsvSource(dataFile());
-        } catch (IOException ex) {
+            return new PlacesCsvParser().parseCsvSource( dataFile() );
+        }catch( IOException ex ){
             dataFile = new File(
                     "/home/wtc_laptop/submission-loadshedding-3/places/resources/PlaceNamesZA2008.csv"
             );
