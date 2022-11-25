@@ -41,7 +41,7 @@ public class TopicReceiver implements Runnable {
 
 
 
-    private String setUpMessageListener() {
+    private void setUpMessageListener() {
         try {
             final ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(MQ.URL);
             connection = factory.createConnection(MQ.USER, MQ.PASSWD);
@@ -76,7 +76,7 @@ public class TopicReceiver implements Runnable {
                                 System.exit(0);
                             }
                             System.out.println("Received message:" + body);
-                            stage = createResponceMap( body );
+                            stage = createResponceStage( body );
                             System.out.println(stage);
 
                         }
@@ -88,14 +88,13 @@ public class TopicReceiver implements Runnable {
         } catch (JMSException erk) {
             throw new RuntimeException(erk);
         }
-        return null;
     }
 
     public int getStage() {
         return stage;
     }
 
-    private int createResponceMap(String body){
+    private int createResponceStage(String body){
         String stageName = body.split(":")[0].replaceAll("\\{","");
         String stageNumber = body.split(":")[1].replaceAll("}","");
         if( checkInteger(stageNumber) ){

@@ -78,12 +78,13 @@ public class ScheduleService {
         }
 
         int newStage = whichStage();
+        Optional<ScheduleDO> schedule;
 
         if( !allStages.contains( newStage ) ){
-            return ctx.status(400);
+            schedule = Optional.empty();
+        }else{
+            schedule = getSchedule(province, townName, newStage );
         }
-
-        final Optional<ScheduleDO> schedule = getSchedule(province, townName, newStage );
 
         ctx.status(schedule.isPresent()
                 ? 200
@@ -93,7 +94,7 @@ public class ScheduleService {
 
     public int whichStage(){
         int newStage = app.getStage();
-        if( !allStages.contains(newStage) && newStage != DEFAULT_STAGE ){
+        if( !allStages.contains(newStage) ){
             allStages.add(newStage);
             return newStage;
         }else{
