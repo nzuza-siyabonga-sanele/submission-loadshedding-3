@@ -38,8 +38,8 @@ public class TopicSender implements Runnable {
             connection.start();
 
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            final Destination destination = session.createQueue( MQ_TOPIC_NAME );
-            MessageProducer producer = session.createProducer(destination);
+            final Destination destination = session.createTopic( MQ_TOPIC_NAME );
+            producer = session.createProducer(destination);
 
             sendMessages(cmdLineMsgs.length == 0
                     ? new String[]{"{ \"stage\":17 }"}

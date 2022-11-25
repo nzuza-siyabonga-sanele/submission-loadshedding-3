@@ -4,18 +4,13 @@ import java.time.LocalTime;
 import java.util.*;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import io.javalin.http.HttpStatus;
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
-import kong.unirest.Unirest;
 import wethinkcode.loadshed.common.transfer.DayDO;
 import wethinkcode.loadshed.common.transfer.ScheduleDO;
 import wethinkcode.loadshed.common.transfer.SlotDO;
-import wethinkcode.places.PlaceNameService;
-
-import static org.springframework.util.StringUtils.capitalize;
+import wethinkcode.loadshed.spikes.TopicReceiver;
 
 /**
  * I provide a REST API providing the current loadshedding schedule for a given town (in a specific province) at a given
@@ -23,14 +18,13 @@ import static org.springframework.util.StringUtils.capitalize;
  */
 public class ScheduleService {
     public static final int DEFAULT_STAGE = 0; // no loadshedding. Ha!
-
     public static final int DEFAULT_PORT = 7002;
 
     public static final String MQ_TOPIC = "stage";
-
+    public static ArrayList<Integer> allStages = new ArrayList<Integer>();
     private Javalin server;
-
     private int servicePort;
+    private TopicReceiver app;
 
     public static void main(String[] args) {
         final ScheduleService svc = new ScheduleService();
@@ -39,6 +33,7 @@ public class ScheduleService {
 
     @VisibleForTesting
     ScheduleService initialise() {
+        startMQMachinery();
         server = initHttpServer();
         return this;
     }
@@ -74,19 +69,25 @@ public class ScheduleService {
         final String stageStr = ctx.pathParam("stage");
 
         if (province.isEmpty() || townName.isEmpty() || stageStr.isEmpty()) {
-            ctx.status(HttpStatus.BAD_REQUEST);
+            ctx.status(400);
             return ctx;
         }
-        final int stage = Integer.parseInt(stageStr);
+        int stage = Integer.parseInt(stageStr);
         if (stage < 0 || stage > 8) {
-            return ctx.status(HttpStatus.BAD_REQUEST);
+            return ctx.status(400);
         }
 
-        final Optional<ScheduleDO> schedule = getSchedule(province, townName, stage);
+        int newStage = app.getStage();
+
+        if( allStages.contains(newStage) ){
+            allStages.add(newStage);
+        }
+
+        final Optional<ScheduleDO> schedule = getSchedule(province, townName, newStage);
 
         ctx.status(schedule.isPresent()
-                ? HttpStatus.OK
-                : HttpStatus.NOT_FOUND);
+                ? 200
+                : 404);
         return ctx.json(schedule.orElseGet(ScheduleService::emptySchedule));
     }
 
@@ -94,27 +95,13 @@ public class ScheduleService {
         final String province = ctx.pathParam("province");
         final String townName = ctx.pathParam("town");
 
-        boolean df = initPlaceNameService(province, townName);
+        Optional<ScheduleDO> schedule = getSchedule( province, townName, app.getStage() );
 
-        final Optional<ScheduleDO> schedule = getSchedule(province, townName, DEFAULT_STAGE);
-
-        ctx.status(df
-                ? HttpStatus.OK
-                : HttpStatus.NOT_FOUND);
+        ctx.status(schedule.isPresent()
+                ? 200
+                : 404);
         return ctx.json(schedule.orElseGet(ScheduleService::emptySchedule));
 //        throw new UnsupportedOperationException("TODO");
-    }
-
-    private boolean initPlaceNameService(String province, String town) {
-
-        HttpResponse<JsonNode> response = Unirest.get( "http://localhost:" + 7000 + "/towns/"+capitalize(province) ).asJson();
-
-        for (Object vc : response.getBody().getArray()) {
-            return vc.toString().contains(capitalize(town))
-                    ? true
-                    : false;
-        };
-        return false;
     }
 
     // There *must* be a better way than this...
@@ -143,5 +130,11 @@ public class ScheduleService {
         final List<SlotDO> slots = Collections.emptyList();
         final List<DayDO> days = Collections.emptyList();
         return new ScheduleDO(days);
+    }
+
+    private void startMQMachinery(){
+        app = new TopicReceiver();
+        Thread task = new Thread( app );
+        task.start();
     }
 }

@@ -2,9 +2,9 @@ package wethinkcode.stage;
 
 
 import com.google.common.annotations.VisibleForTesting;
+
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import io.javalin.http.HttpStatus;
 import wethinkcode.loadshed.common.transfer.StageDO;
 import wethinkcode.loadshed.spikes.QueueSender;
 import wethinkcode.loadshed.spikes.TopicSender;
@@ -27,7 +27,7 @@ public class StageService {
     public static final String MQ_TOPIC_NAME = "stage";
 
     public static void main(String[] args) {
-        final StageService svc = new StageService().initialise();
+        final StageService svc = new StageService();
         svc.start();
     }
 
@@ -57,6 +57,7 @@ public class StageService {
 
     @VisibleForTesting
     void start(int networkPort) {
+        initialise();
         servicePort = networkPort;
         run();
     }
@@ -85,9 +86,9 @@ public class StageService {
         if (newStage >= 0) {
             loadSheddingStage = newStage;
             broadcastStageChangeEvent(ctx);
-            ctx.status(HttpStatus.OK);
+            ctx.status(200);
         } else {
-            ctx.status(HttpStatus.BAD_REQUEST);
+            ctx.status(400);
         }
         return ctx.json(new StageDO(loadSheddingStage));
     }

@@ -4,6 +4,9 @@ import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import wethinkcode.loadshed.common.mq.MQ;
+//import wethinkcode.schedule.ScheduleService;
+//import wethinkcode.web.WebService;
+
 
 /**
  * I am a small "maker" app for receiving MQ messages from the Stage Service by
@@ -14,7 +17,7 @@ public class TopicReceiver implements Runnable {
 
     public static final String MQ_TOPIC_NAME = "stage";
 
-    public String allMessage;
+    public static int stage = 0;
 
     public static void main(String[] args) {
         final TopicReceiver app = new TopicReceiver();
@@ -36,15 +39,17 @@ public class TopicReceiver implements Runnable {
         System.out.println("Bye...");
     }
 
-    private void setUpMessageListener() {
+
+
+    private String setUpMessageListener() {
         try {
             final ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(MQ.URL);
             connection = factory.createConnection(MQ.USER, MQ.PASSWD);
 
             final Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             final Destination dest = session.createTopic(MQ_TOPIC_NAME); // <-- NB: Topic, not Queue!
-
             final MessageConsumer receiver = session.createConsumer(dest);
+
             receiver.setMessageListener(msg -> {
                         long start = System.currentTimeMillis();
 
@@ -71,7 +76,9 @@ public class TopicReceiver implements Runnable {
                                 System.exit(0);
                             }
                             System.out.println("Received message:" + body);
-                            allMessage = body;
+                            stage = createResponceMap( body );
+                            System.out.println(stage);
+
                         }
 //                throw new UnsupportedOperationException("TODO");
             }
@@ -80,6 +87,29 @@ public class TopicReceiver implements Runnable {
 
         } catch (JMSException erk) {
             throw new RuntimeException(erk);
+        }
+        return null;
+    }
+
+    public int getStage() {
+        return stage;
+    }
+
+    private int createResponceMap(String body){
+        String stageName = body.split(":")[0].replaceAll("\\{","");
+        String stageNumber = body.split(":")[1].replaceAll("}","");
+        if( checkInteger(stageNumber) ){
+            return Integer.parseInt(stageNumber);
+        }
+        return stage;
+    }
+
+    private boolean checkInteger(String stageNumber) {
+        try {
+            Integer.parseInt( stageNumber );
+            return true;
+        } catch(NumberFormatException e){
+            return false;
         }
     }
 

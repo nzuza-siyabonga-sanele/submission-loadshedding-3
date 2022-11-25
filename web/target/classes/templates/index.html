@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Loadshedding Schedule</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pangolin">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+<div>
+    <h1>Loadshedding Schedule</h1>
+    <table>
+        <tr>
+            <th>Currently Loadshedding Stage: </th>
+            <td th:text="${loadshedstage}"></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <form action="province.action" method="POST">
+        <input hidden id="the-stage" name="the-stage" type="text" th:value="${loadshedstage}">
+        <select class="provinceselect" name="provinceId" id="provinceId" onchange="this.form.submit()">
+            <option>Select A Province</option>
+            <option th:each="province : ${provinces}" th:value="${province}" th:text="${province}"></option>
+        </select>
+    </form>
+
+</div>
+<div th:if="${towns}">
+    <p th:text="${provinceId}"></p>
+    <form action="town.action" method="POST">
+        <select name="towns" id="towns" onchange="this.form.submit()">
+            <option>Select A Town</option>
+            <option th:each="town : ${towns}" th:value="${town.name}" th:text="${town.name}"></option>
+        </select>
+    </form>
+</div>
+
+<div th:if="${schedule}">
+    <hr>
+    <table>
+        <tr>
+            <th>Selected Province: </th>
+            <td th:text="${provinceId}"></td>
+            <th>Town: </th>
+            <td th:text="${townId}"></td>
+        </tr>
+    </table>
+    <hr>
+    <table>
+        <tr th:each="eachDay : ${schedule}">
+            <table>
+                <tr th:if="${eachDay.getLOCAL_DATE}">
+                    <th>Day</th>
+                    <th th:text="${eachDay.getLOCAL_DATE}"></th>
+                </tr>
+                <tr th:each="start : ${eachDay.getSLOT_DO_COLLECTION()}">
+                    <td th:text="${start.getStart()}"></td>
+                    <td> - </td>
+                    <td th:text="${start.getEnd()}"></td>
+                </tr>
+            </table>
+        </tr>
+        <hr>
+    </table>
+</div>
+</body>
+
+</html>
