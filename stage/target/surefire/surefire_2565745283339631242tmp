@@ -1,0 +1,5 @@
+#surefire_2
+#Sat Nov 26 16:42:44 SAST 2022
+basedir=/home/wtc_laptop/submission-loadshedding-3/stage
+localRepository=/home/wtc_laptop/.m2/repository
+user.dir=/home/wtc_laptop/submission-loadshedding-3/stage

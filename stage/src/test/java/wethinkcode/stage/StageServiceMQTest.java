@@ -1,6 +1,7 @@
 package wethinkcode.stage;
 
 
+import java.util.ArrayList;
 import java.util.concurrent.SynchronousQueue;
 
 import javax.jms.*;
@@ -11,15 +12,15 @@ import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.junit.jupiter.api.*;
+import wethinkcode.loadshed.common.mq.MQ;
 import wethinkcode.loadshed.common.transfer.StageDO;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * I test StageService message sending.
  */
-@Disabled
+//@Disabled
 @Tag( "expensive" )
 public class StageServiceMQTest
 {
@@ -38,14 +39,16 @@ public class StageServiceMQTest
     }
 
     @AfterAll
-    public static void cleanup() throws JMSException {
+    public static void cleanup(){
         server.stop();
-        mqConnection.close();
+//        mqConnection.close();
     }
 
-    @BeforeEach
+//    @BeforeEach
     public void connectMqListener( MessageListener listener ) throws JMSException {
-        mqConnection = factory.createConnection();
+
+        mqConnection = factory.createConnection("admin", "admin");
+
         final Session session = mqConnection.createSession( false, Session.AUTO_ACKNOWLEDGE );
         final Destination dest = session.createTopic( StageService.MQ_TOPIC_NAME );
 
@@ -53,6 +56,7 @@ public class StageServiceMQTest
         receiver.setMessageListener( listener );
 
         mqConnection.start();
+
     }
 
     @AfterEach
@@ -62,37 +66,30 @@ public class StageServiceMQTest
     }
 
     @Test
-    public void sendMqEventWhenStageChanges(){
-        System.out.println("vfbhbhjbhjfd");
+    public void sendMqEventWhenStageChanges() throws JMSException {
+
         final SynchronousQueue<StageDO> resultCatcher = new SynchronousQueue<>();
+
         final MessageListener mqListener = message -> {
-            long start = System.currentTimeMillis();
-            if(message instanceof TextMessage){
 
-                String body = null;
-                try {
-                    body = ((TextMessage) message).getText();
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
-
-                if ("SHUTDOWN".equals(body)) {
-                    long diff = System.currentTimeMillis() - start;
-                    System.out.println(String.format("Received %d in %.2f seconds", (1.0 * diff / 1000.0)));
+                if(message instanceof TextMessage){
+                    String body = null;
                     try {
-                        mqConnection.close();
+                        body = ((TextMessage) message).getText();
                     } catch (JMSException e) {
                         e.printStackTrace();
                     }
-                    try {
-                        Thread.sleep(10);
-                    } catch (Exception e) {}
-                    System.exit(0);
+                    int stageNumber = Integer.parseInt(body.split(":")[1].replaceAll("}",""));
+                    Thread producer = new Thread("PRODUCER") {
+                        public void run() {
+                            try {
+                                resultCatcher.put( new StageDO( stageNumber )); // thread will block here
+                            } catch (InterruptedException e) { e.printStackTrace(); }
+                        }
+                    };producer.run();
                 }
-                System.out.println("Received message:" + body);
-
-            }
         };
+        connectMqListener(mqListener);
 
         final HttpResponse<StageDO> startStage = Unirest.get( serverUrl() + "/stage" ).asObject( StageDO.class );
         assertEquals( HttpStatus.OK, startStage.getStatus() );
@@ -100,19 +97,28 @@ public class StageServiceMQTest
         final StageDO data = startStage.getBody();
         final int newStage = data.getStage() + 1;
 
-        final HttpResponse<JsonNode> changeStage = Unirest.post( serverUrl() + "/stage" )
+        HttpResponse<JsonNode> changeStage = Unirest.post( serverUrl() + "/stage" )
             .header( "Content-Type", "application/json" )
             .body( new StageDO( newStage ))
             .asJson();
         assertEquals( HttpStatus.OK, changeStage.getStatus() );
 
-        fail( "TODO" );
+        final ArrayList<StageDO> eventLister = new ArrayList<>();
+        Thread consumer = new Thread("CONSUMER") {
+            public void run() {
+                try {
+                    StageDO event = resultCatcher.take();
+                    eventLister.add( event );
+            } catch (InterruptedException e) { e.printStackTrace(); } }
+        }; consumer.run();
 
+        assertEquals( eventLister.get(0).getStage() , 1);
+        assertTrue( eventLister.size() > 0);
 
     }
 
-    private static void startMsgQueue() throws JMSException {
-        factory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
+    private static void startMsgQueue(){
+        factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
     }
 
     private static void startStageSvc(){

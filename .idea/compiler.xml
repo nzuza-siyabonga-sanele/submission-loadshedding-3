@@ -8,10 +8,18 @@
         <outputRelativeToContentRoot value="true" />
         <module name="schedule" />
         <module name="places" />
-        <module name="common" />
         <module name="stage" />
+        <module name="common" />
         <module name="web" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common" target="17" />
+      <module name="loadshed" target="17" />
+      <module name="places" target="17" />
+      <module name="schedule" target="17" />
+      <module name="stage" target="17" />
+      <module name="web" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -24,7 +24,6 @@ public class TopicSender implements Runnable {
         app.run();
     }
     private String[] cmdLineMsgs;
-
     private Connection connection;
     private MessageProducer producer;
 
@@ -49,7 +48,6 @@ public class TopicSender implements Runnable {
             throw new RuntimeException(erk);
         } finally {
             closeResources();
-            System.out.println("Bye...");
         }
     }
 
@@ -58,7 +56,7 @@ public class TopicSender implements Runnable {
         for (String message : messages) {
             TextMessage msg = session.createTextMessage(message);
             producer.send(msg);
-            System.out.println("Sent message : "+ message);
+            System.out.println("TopicSender Sent message : "+ message);
         }
 //        throw new UnsupportedOperationException("TODO");
     }

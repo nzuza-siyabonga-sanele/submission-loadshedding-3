@@ -61,7 +61,7 @@ public class QueueReceiver implements Runnable {
 
             final MessageConsumer receiver = session.createConsumer(queueId);
             //this anonymous inner-class could be replaced with a lambda
-            receiver.setMessageListener(msg -> {
+            receiver.setMessageListener( msg -> {
                         long start = System.currentTimeMillis();
 
                         if(msg instanceof TextMessage){

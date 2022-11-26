@@ -75,10 +75,8 @@ public class TopicReceiver implements Runnable {
                                 } catch (Exception e) {}
                                 System.exit(0);
                             }
-                            System.out.println("Received message:" + body);
+                            System.out.println("TopicReceiver Received message:" + body);
                             stage = createResponceStage( body );
-                            System.out.println(stage);
-
                         }
 //                throw new UnsupportedOperationException("TODO");
             }
