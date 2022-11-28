@@ -21,7 +21,7 @@ public class ScheduleService {
     public static final int DEFAULT_PORT = 7002;
 
     public static final String MQ_TOPIC = "stage";
-    public static ArrayList<Integer> allStages = new ArrayList<Integer>();
+
     private Javalin server;
     private int servicePort;
     private TopicReceiver app;
@@ -77,14 +77,7 @@ public class ScheduleService {
             return ctx.status(400);
         }
 
-        int newStage = whichStage();
-        Optional<ScheduleDO> schedule;
-
-        if( !allStages.contains( newStage ) ){
-            schedule = Optional.empty();
-        }else{
-            schedule = getSchedule(province, townName, newStage );
-        }
+        final Optional<ScheduleDO> schedule = getSchedule(province, townName, stage );
 
         ctx.status(schedule.isPresent()
                 ? 200
@@ -92,21 +85,11 @@ public class ScheduleService {
         return ctx.json(schedule.orElseGet(ScheduleService::emptySchedule));
     }
 
-    public int whichStage(){
-        int newStage = app.getStage();
-        if( !allStages.contains(newStage) ){
-            allStages.add(newStage);
-            return newStage;
-        }else{
-            return DEFAULT_STAGE;
-        }
-    }
-
     private Context getDefaultSchedule(Context ctx) {
         final String province = ctx.pathParam("province");
         final String townName = ctx.pathParam("town");
 
-        Optional<ScheduleDO> schedule = getSchedule( province, townName, whichStage() );
+        Optional<ScheduleDO> schedule = getSchedule( province, townName, app.getStage() > 0 ? app.getStage() : DEFAULT_STAGE );
 
         ctx.status(schedule.isPresent()
                 ? 200

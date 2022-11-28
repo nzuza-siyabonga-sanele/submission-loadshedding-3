@@ -12,7 +12,6 @@ import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.junit.jupiter.api.*;
-import wethinkcode.loadshed.common.mq.MQ;
 import wethinkcode.loadshed.common.transfer.StageDO;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,6 +79,7 @@ public class StageServiceMQTest
                         e.printStackTrace();
                     }
                     int stageNumber = Integer.parseInt(body.split(":")[1].replaceAll("}",""));
+
                     Thread producer = new Thread("PRODUCER") {
                         public void run() {
                             try {
@@ -87,8 +87,10 @@ public class StageServiceMQTest
                             } catch (InterruptedException e) { e.printStackTrace(); }
                         }
                     };producer.run();
+                    producer.stop();
                 }
         };
+
         connectMqListener(mqListener);
 
         final HttpResponse<StageDO> startStage = Unirest.get( serverUrl() + "/stage" ).asObject( StageDO.class );
@@ -103,6 +105,7 @@ public class StageServiceMQTest
             .asJson();
         assertEquals( HttpStatus.OK, changeStage.getStatus() );
 
+
         final ArrayList<StageDO> eventLister = new ArrayList<>();
         Thread consumer = new Thread("CONSUMER") {
             public void run() {
@@ -111,6 +114,7 @@ public class StageServiceMQTest
                     eventLister.add( event );
             } catch (InterruptedException e) { e.printStackTrace(); } }
         }; consumer.run();
+        consumer.stop();
 
         assertEquals( eventLister.get(0).getStage() , 1);
         assertTrue( eventLister.size() > 0);

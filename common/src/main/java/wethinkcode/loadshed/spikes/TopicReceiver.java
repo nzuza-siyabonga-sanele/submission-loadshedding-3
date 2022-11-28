@@ -4,8 +4,7 @@ import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import wethinkcode.loadshed.common.mq.MQ;
-//import wethinkcode.schedule.ScheduleService;
-//import wethinkcode.web.WebService;
+
 
 
 /**
@@ -17,7 +16,7 @@ public class TopicReceiver implements Runnable {
 
     public static final String MQ_TOPIC_NAME = "stage";
 
-    public static int stage = 0;
+    public static int stage;
 
     public static void main(String[] args) {
         final TopicReceiver app = new TopicReceiver();

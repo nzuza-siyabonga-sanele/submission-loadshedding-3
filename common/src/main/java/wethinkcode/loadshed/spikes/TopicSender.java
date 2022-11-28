@@ -26,7 +26,6 @@ public class TopicSender implements Runnable {
     private String[] cmdLineMsgs;
     private Connection connection;
     private MessageProducer producer;
-
     private Session session;
 
     @Override
@@ -56,6 +55,8 @@ public class TopicSender implements Runnable {
         for (String message : messages) {
             TextMessage msg = session.createTextMessage(message);
             producer.send(msg);
+            int newStage = Integer.parseInt(message.split(":")[1].replaceAll("}",""));
+
             System.out.println("TopicSender Sent message : "+ message);
         }
 //        throw new UnsupportedOperationException("TODO");

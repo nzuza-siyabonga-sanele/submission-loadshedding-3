@@ -6,7 +6,6 @@ import com.google.common.annotations.VisibleForTesting;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import wethinkcode.loadshed.common.transfer.StageDO;
-import wethinkcode.loadshed.spikes.QueueSender;
 import wethinkcode.loadshed.spikes.TopicSender;
 
 /**
@@ -30,7 +29,6 @@ public class StageService {
         final StageService svc = new StageService();
         svc.start();
     }
-
     private int loadSheddingStage;
 
     private Javalin server;

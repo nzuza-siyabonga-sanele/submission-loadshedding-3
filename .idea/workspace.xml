@@ -5,54 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29b6b590-5fb0-4eba-8e88-8a4b9cee0f5f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/common/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/QueueReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/QueueReceiver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/TopicReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/TopicReceiver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/TopicSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/TopicSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/common/mq/MQ.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/common/transfer/DayDO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/common/transfer/ScheduleDO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/common/transfer/SlotDO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/common/transfer/StageDO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/common/util/Checks.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/QueueReceiver.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/QueueSender.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/TopicReceiver.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/TopicSender.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/target/test-classes/wethinkcode/loadshed/common/util/ChecksTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/classes/wethinkcode/places/PlaceNameService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/classes/wethinkcode/places/PlacesCsvParser.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/classes/wethinkcode/places/db/memory/PlacesDb.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/classes/wethinkcode/places/model/Places.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/classes/wethinkcode/places/model/Town.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/test-classes/wethinkcode/places/PlaceNameApiTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/test-classes/wethinkcode/places/PlaceNameConfigTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/test-classes/wethinkcode/places/PlaceNameServiceTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/test-classes/wethinkcode/places/PlacesCsvParserTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/test-classes/wethinkcode/places/PlacesTestData.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/places/target/test-classes/wethinkcode/places/db/memory/PlacesDbTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/schedule/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule/target/classes/wethinkcode/schedule/ScheduleService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule/target/classes/wethinkcode/schedule/handlyScheduleDO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule/target/test-classes/wethinkcode/schedule/ScheduleServiceAPITest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule/target/test-classes/wethinkcode/schedule/ScheduleServiceTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/TopicReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/TopicReceiver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/TopicSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/common/target/classes/wethinkcode/loadshed/spikes/TopicSender.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schedule/src/main/java/wethinkcode/schedule/ScheduleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/schedule/src/main/java/wethinkcode/schedule/ScheduleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schedule/target/classes/wethinkcode/schedule/ScheduleService.class" beforeDir="false" afterPath="$PROJECT_DIR$/schedule/target/classes/wethinkcode/schedule/ScheduleService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage/src/main/java/wethinkcode/stage/StageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/stage/src/main/java/wethinkcode/stage/StageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stage/src/test/java/wethinkcode/stage/StageServiceMQTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/stage/src/test/java/wethinkcode/stage/StageServiceMQTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage/target/classes/wethinkcode/stage/StageService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage/target/test-classes/wethinkcode/stage/StageServiceAPITest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage/target/test-classes/wethinkcode/stage/StageServiceMQTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/web/dependency-reduced-pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/web/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/target/classes/templates/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/target/classes/wethinkcode/web/Routes.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/target/classes/wethinkcode/web/WebService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/target/classes/wethinkcode/web/WebServiceController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage/target/classes/wethinkcode/stage/StageService.class" beforeDir="false" afterPath="$PROJECT_DIR$/stage/target/classes/wethinkcode/stage/StageService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage/target/test-classes/wethinkcode/stage/StageServiceMQTest$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/stage/target/test-classes/wethinkcode/stage/StageServiceMQTest$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stage/target/test-classes/wethinkcode/stage/StageServiceMQTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/stage/target/test-classes/wethinkcode/stage/StageServiceMQTest.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,11 +26,22 @@
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/TopicReceiver.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/common/src/main/java/wethinkcode/loadshed/spikes/TopicSender.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/schedule/src/main/java/wethinkcode/schedule/ScheduleService.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/stage/src/test/java/wethinkcode/stage/StageServiceMQTest.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/web/src/main/java/wethinkcode/web/WebService.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -115,6 +90,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="StageServiceAPITest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="wethinkcode.stage.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="wethinkcode.stage" />
+      <option name="MAIN_CLASS_NAME" value="wethinkcode.stage.StageServiceAPITest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StageServiceMQTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage" />
       <extension name="coverage">
@@ -150,6 +140,7 @@
       <list>
         <item itemvalue="JUnit.StageServiceMQTest" />
         <item itemvalue="Application.WebService" />
+        <item itemvalue="JUnit.StageServiceAPITest" />
         <item itemvalue="JUnit.StageServiceMQTest.sendMqEventWhenStageChanges" />
       </list>
     </recent_temporary>
